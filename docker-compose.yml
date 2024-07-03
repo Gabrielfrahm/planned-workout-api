@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "3333:3333"
+    container_name: planned-workout-api-container
+    volumes:
+      - .:/usr/src/app
+    command: yarn start:dev
+    networks:
+      - planned-workout-network
+    environment:
+      - NODE_ENV=development
+
+  plannedworkoutdb:
+    image: postgres:latest
+    networks:
+      - planned-workout-network
+    container_name: planned-workout-db-container
+    volumes:
+      - planned-workout_db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: planned-workout-db
+      POSTGRES_PASSWORD: planned-workout-db
+      POSTGRES_DB: planned-workout-db
+    ports:
+      - '5432:5432'
+    restart: unless-stopped
+    healthcheck:
+      test: [ 'CMD-SHELL', 'pg_isready -U planned-workout-db' ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:alpine
+    ports:
+      - '6379:6379'
+    networks:
+      - planned-workout-network
+    container_name: planned-workout-redis
+
+networks:
+  planned-workout-network:
+    driver: bridge
+
+volumes:
+  planned-workout_db_data:
