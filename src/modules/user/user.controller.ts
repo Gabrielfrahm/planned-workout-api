@@ -1,21 +1,31 @@
-import { ConfigService } from '@config/service/config.service';
-import { PrismaService } from '@modules/database/prisma/prisma.service';
-import { Controller, Get, Inject, LoggerService } from '@nestjs/common';
+import { Body, Controller, Inject, LoggerService, Post } from '@nestjs/common';
+import { CreateUserDto, OutputUserDto } from './dtos/user.dto';
+import { CreateUserUseCase } from './usecases/create-user.usecase';
 
 @Controller('users')
 export class UserController {
   constructor(
     @Inject('WinstonLoggerService')
     private readonly loggerService: LoggerService,
-    private readonly prismaService: PrismaService,
-    private readonly configService: ConfigService,
+
+    private readonly createUserUseCase: CreateUserUseCase,
   ) {}
 
-  @Get('/')
-  async test() {
-    const users = await this.prismaService.user.findMany();
-    const mailConfig = this.configService.get('mail');
-    this.loggerService.log(mailConfig.host);
-    return users;
+  @Post('/')
+  async createUser(@Body() data: CreateUserDto): Promise<OutputUserDto> {
+    const response = await this.createUserUseCase.execute(data);
+    if (response.isLeft()) {
+      await this.loggerService.error(
+        `Error when try create new user with params ${JSON.stringify(data)}`,
+        response.value.stack,
+      );
+      throw response.value;
+    }
+
+    await this.loggerService.log(
+      `User created ${JSON.stringify(response.value.email)}`,
+    );
+
+    return response.value;
   }
 }

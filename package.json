@@ -26,6 +26,8 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
     "@prisma/client": "^5.16.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "dotenv": "^16.4.5",
     "pg": "^8.12.0",
     "reflect-metadata": "^0.2.0",
@@ -74,14 +76,13 @@
     "rootDir": ".",
     "moduleNameMapper": {
       "@/tests/(.*)": "<rootDir>/tests/$1",
-      "@/(.*)": "<rootDir>/src/$1"
+      "@modules/(.*)": "<rootDir>/src/modules/$1",
+      "@shared/(.*)": "<rootDir>/src/shared/$1",
+      "@config/(.*)": "<rootDir>/src/config/$1"
     },
     "testRegex": ".*\\..*spec\\.ts$",
     "collectCoverageFrom": [
-      "src/**/*.(t)s",
-      "!src/2-business/services/**",
-      "!src/**/*.interface.(t)s",
-      "!src/**/*.interfaces.(t)s"
+      "src/**/*.(t)s"
     ],
     "transform": {
       "^.+\\.(t|j)s$": "@swc/jest"

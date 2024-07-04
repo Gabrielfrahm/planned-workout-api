@@ -1,8 +1,30 @@
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { EitherExceptionFilter } from './error.handler';
+import { WinstonLoggerService } from '@modules/logger/logger.service';
+import { Logger } from '@nestjs/common';
+import { CustomValidationPipe } from './class-validation.pipe';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
+
+  // middleware para logar as rotas chamadas
+  app.use((req, res, next) => {
+    res.on('finish', () => {
+      Logger.log(`${req.method} ${req.originalUrl}`, 'RouteCalled');
+    });
+    next();
+  });
+
+  app.useGlobalPipes(new CustomValidationPipe());
+
+  const httpAdapterHost = app.get(HttpAdapterHost);
+
+  app.useGlobalFilters(
+    new EitherExceptionFilter(httpAdapterHost, new WinstonLoggerService()),
+  );
+
   await app.listen(process.env.PORT);
 }
 bootstrap();
