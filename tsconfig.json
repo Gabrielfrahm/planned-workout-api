@@ -32,6 +32,7 @@
   "include": [
     "tests",
     "src",
+    "jest-unit.config.js",
   ],
   "exclude": [
     "node_modules",

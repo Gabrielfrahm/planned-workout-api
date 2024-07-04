@@ -13,7 +13,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test:unit": "jest  --runInBand  tests/unit",
+    "test:unit": "jest  --runInBand --config jest-unit.config.ts tests/unit",
     "test:e2e": "jest --runInBand tests/e2e",
     "test:inte": "jest --runInBand tests/integration",
     "test:cov": "jest --runInBand --coverage",
