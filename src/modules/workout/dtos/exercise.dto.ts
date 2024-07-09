@@ -117,3 +117,24 @@ export class DeleteExerciseByIdDto {
   @IsNotEmpty()
   id: string;
 }
+
+export class UpdateExerciseByIdDto {
+  @IsUUID(4)
+  @IsNotEmpty()
+  id: string;
+
+  @IsOptional()
+  name?: string;
+
+  @IsOptional()
+  reps?: number;
+
+  @IsOptional()
+  restTime?: string;
+
+  @IsOptional()
+  sets?: number;
+
+  @IsOptional()
+  techniques?: string;
+}

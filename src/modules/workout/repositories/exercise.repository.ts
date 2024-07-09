@@ -219,4 +219,59 @@ export class ExerciseRepository implements ExerciseRepositoryInterface {
       return left(e);
     }
   }
+
+  async update(
+    exercise: ExerciseEntity,
+  ): Promise<Either<Error, ExerciseEntity>> {
+    try {
+      const findExercise = await this.model.findUnique({
+        where: {
+          id: exercise.getId(),
+        },
+      });
+
+      if (!findExercise) {
+        return left(
+          new RepositoryException(
+            `exercise not  found for this id ${exercise.getId()}`,
+            404,
+          ),
+        );
+      }
+
+      const updatedExercise = await this.model.update({
+        where: {
+          id: exercise.getId(),
+        },
+        data: {
+          id: exercise.getId(),
+          name: exercise.getName(),
+          reps: exercise.getReps(),
+          restTime: exercise.getRestTime(),
+          sets: exercise.getSets(),
+          techniques: exercise.getTechniques(),
+          workoutId: exercise.getWorkoutId(),
+          updatedAt: exercise.getUpdatedAt(),
+          deletedAt: exercise.getDeletedAt(),
+        },
+      });
+
+      return right(
+        ExerciseEntity.CreateFrom({
+          id: updatedExercise.id,
+          name: updatedExercise.name,
+          reps: updatedExercise.reps,
+          restTime: updatedExercise.restTime,
+          sets: updatedExercise.sets,
+          techniques: updatedExercise.techniques,
+          workoutId: updatedExercise.workoutId,
+          createdAt: updatedExercise.createdAt,
+          updatedAt: updatedExercise.updatedAt,
+          deletedAt: updatedExercise.deletedAt,
+        }),
+      );
+    } catch (e) {
+      return left(e);
+    }
+  }
 }

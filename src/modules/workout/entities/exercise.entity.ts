@@ -81,6 +81,30 @@ export class ExerciseEntity extends BaseEntity {
     };
   }
 
+  public Update(data: Partial<ExerciseEntityProps>): void {
+    if (data.name) {
+      this.name = data.name;
+    }
+
+    if (data.reps) {
+      this.reps = data.reps;
+    }
+
+    if (data.restTime) {
+      this.restTime = data.restTime;
+    }
+
+    if (data.sets) {
+      this.sets = data.sets;
+    }
+
+    if (data.techniques) {
+      this.techniques = data.techniques;
+    }
+
+    this.updatedAt = new Date();
+  }
+
   // Getters
   public getName(): string {
     return this.name;

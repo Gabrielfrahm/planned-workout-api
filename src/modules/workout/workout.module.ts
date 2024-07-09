@@ -15,6 +15,7 @@ import { CreateExerciseUseCase } from './usecases/exercies/create-exercise.useca
 import { FindExerciseByIdUseCase } from './usecases/exercies/find-exercise-by-id.usecase';
 import { SearchExerciseUseCase } from './usecases/exercies/search-exercise.usecase';
 import { DeleteByIdExerciseUseCase } from './usecases/exercies/delete-exercise.usecase';
+import { UpdateExerciseUseCase } from './usecases/exercies/update-exercise.usecase';
 
 @Module({
   imports: [LoggingModule, UserModule, AuthModule],
@@ -41,6 +42,7 @@ import { DeleteByIdExerciseUseCase } from './usecases/exercies/delete-exercise.u
     FindExerciseByIdUseCase,
     SearchExerciseUseCase,
     DeleteByIdExerciseUseCase,
+    UpdateExerciseUseCase,
   ],
   exports: ['workoutRepository', 'exerciseRepository'],
 })

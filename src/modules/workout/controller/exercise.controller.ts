@@ -6,6 +6,7 @@ import {
   Inject,
   LoggerService,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -20,10 +21,12 @@ import {
   OutputExerciseDto,
   OutputSearchExercisesDto,
   SearchExerciseDto,
+  UpdateExerciseByIdDto,
 } from '../dtos/exercise.dto';
 import { FindExerciseByIdUseCase } from '../usecases/exercies/find-exercise-by-id.usecase';
 import { SearchExerciseUseCase } from '../usecases/exercies/search-exercise.usecase';
 import { DeleteByIdExerciseUseCase } from '../usecases/exercies/delete-exercise.usecase';
+import { UpdateExerciseUseCase } from '../usecases/exercies/update-exercise.usecase';
 
 @Controller('exercises')
 export class ExercisesController {
@@ -35,6 +38,7 @@ export class ExercisesController {
     private readonly findExerciseByIdUseCase: FindExerciseByIdUseCase,
     private readonly searchExercisesUseCase: SearchExerciseUseCase,
     private readonly deleteByIdExerciseUseCase: DeleteByIdExerciseUseCase,
+    private readonly updateExerciseUseCase: UpdateExerciseUseCase,
   ) {}
 
   @Post('/')
@@ -127,5 +131,29 @@ export class ExercisesController {
     await this.loggerService.log(`exercise deleted ${data.id}`);
 
     return 'deleted';
+  }
+
+  @Patch('/:id')
+  @UseGuards(AuthenticationGuard)
+  async updateById(
+    @Body() data: Omit<UpdateExerciseByIdDto, 'id'>,
+    @Param('id') id: string,
+  ): Promise<OutputExerciseDto> {
+    const response = await this.updateExerciseUseCase.execute({
+      id,
+      ...data,
+    });
+
+    if (response.isLeft()) {
+      await this.loggerService.error(
+        `Error when try Update by id exercise with params ${JSON.stringify(data)}`,
+        response.value.stack,
+      );
+      throw response.value;
+    }
+
+    await this.loggerService.log(`exercise Updated ${id}`);
+
+    return response.value;
   }
 }

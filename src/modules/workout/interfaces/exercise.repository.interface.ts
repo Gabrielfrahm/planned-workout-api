@@ -11,4 +11,5 @@ export interface ExerciseRepositoryInterface {
   list(
     params?: SearchExerciseDto,
   ): Promise<Either<Error, Search<ExerciseEntity>>>;
+  update(exercise: ExerciseEntity): Promise<Either<Error, ExerciseEntity>>;
 }
