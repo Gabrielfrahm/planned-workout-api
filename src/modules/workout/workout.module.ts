@@ -9,10 +9,13 @@ import { AuthModule } from '@modules/auth/auth.module';
 import { FindByIdWorkoutUseCase } from './usecases/find-by-id-workout.usecase';
 import { DeleteByIdWorkoutUseCase } from './usecases/delete-workout.usecase';
 import { SearchWorkoutsUseCase } from './usecases/search-workout.usecase';
+import { ExercisesController } from './controller/exercise.controller';
+import { ExerciseRepository } from './repositories/exercise.repository';
+import { CreateExerciseUseCase } from './usecases/exercies/create-exercise.usecase';
 
 @Module({
   imports: [LoggingModule, UserModule, AuthModule],
-  controllers: [WorkoutsController],
+  controllers: [WorkoutsController, ExercisesController],
   providers: [
     PrismaService,
     {
@@ -21,11 +24,18 @@ import { SearchWorkoutsUseCase } from './usecases/search-workout.usecase';
         new WorkoutRepository(prismaService),
       inject: [PrismaService],
     },
+    {
+      provide: 'exerciseRepository',
+      useFactory: (prismaService: PrismaService): ExerciseRepository =>
+        new ExerciseRepository(prismaService),
+      inject: [PrismaService],
+    },
     CreateWorkoutUseCase,
     FindByIdWorkoutUseCase,
     DeleteByIdWorkoutUseCase,
     SearchWorkoutsUseCase,
+    CreateExerciseUseCase,
   ],
-  exports: ['workoutRepository'],
+  exports: ['workoutRepository', 'exerciseRepository'],
 })
 export class WorkoutModule {}

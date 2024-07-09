@@ -7,6 +7,7 @@ export interface ExerciseEntityProps extends BaseEntityProps {
   reps: number;
   restTime: string;
   techniques: string;
+  workoutId: string;
   updatedAt: Date;
   deletedAt?: Date;
 }
@@ -17,6 +18,8 @@ export class ExerciseEntity extends BaseEntity {
   private reps: ExerciseEntityProps['sets'];
   private restTime: ExerciseEntityProps['restTime'];
   private techniques: ExerciseEntityProps['techniques'];
+  private workoutId: ExerciseEntityProps['workoutId'];
+
   private updatedAt: ExerciseEntityProps['updatedAt'];
   private deletedAt: ExerciseEntityProps['deletedAt'];
 
@@ -27,6 +30,7 @@ export class ExerciseEntity extends BaseEntity {
     this.reps = data.reps;
     this.restTime = data.restTime;
     this.techniques = data.techniques;
+    this.workoutId = data.workoutId;
     this.updatedAt = data.updatedAt;
     this.deletedAt = data.deletedAt;
   }
@@ -55,6 +59,7 @@ export class ExerciseEntity extends BaseEntity {
       restTime: data.restTime,
       sets: data.sets,
       techniques: data.techniques,
+      workoutId: data.workoutId,
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
       deletedAt: data.deletedAt,
@@ -69,6 +74,7 @@ export class ExerciseEntity extends BaseEntity {
       restTime: this.restTime,
       sets: this.sets,
       techniques: this.techniques,
+      workoutId: this.workoutId,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
       deletedAt: this.deletedAt,
@@ -90,6 +96,10 @@ export class ExerciseEntity extends BaseEntity {
 
   public getRestTime(): string {
     return this.restTime;
+  }
+
+  public getWorkoutId(): string {
+    return this.workoutId;
   }
 
   public getTechniques(): string {
