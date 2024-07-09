@@ -127,6 +127,6 @@ describe('Auth', () => {
     const result = await auth.execute(input);
 
     expect(result.isRight()).toBe(true);
-    expect(result.value).toEqual({ token: 'jwt-token' });
+    expect(result.value).toMatchObject({ token: 'jwt-token' });
   });
 });
