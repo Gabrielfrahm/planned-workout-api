@@ -46,6 +46,15 @@ export class Auth
       return left(modelToken.value);
     }
 
-    return right({ token: token.value });
+    return right({
+      user: {
+        email: user.value.getEmail(),
+        name: user.value.getName(),
+        createdAt: user.value.getCreatedAt(),
+        updatedAt: user.value.getUpdatedAt(),
+        deletedAt: user.value.getDeletedAt(),
+      },
+      token: token.value,
+    });
   }
 }

@@ -74,6 +74,30 @@ export class UserRepository implements UserRepositoryInterface {
     }
   }
 
+  async findById(id: string): Promise<Either<Error, UserEntity>> {
+    try {
+      const user = await this.model.findUnique({
+        where: {
+          id: id,
+        },
+      });
+
+      if (!user) {
+        return left(
+          new RepositoryException(`User Not Found for this id: ${id}`, 404),
+        );
+      }
+
+      return right(
+        UserEntity.CreateFrom({
+          ...user,
+        }),
+      );
+    } catch (e) {
+      return left(e);
+    }
+  }
+
   async delete(id: string): Promise<Either<Error, void>> {
     try {
       const checkUser = await this.model.findUnique({
