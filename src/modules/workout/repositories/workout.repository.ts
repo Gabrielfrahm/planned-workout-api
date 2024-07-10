@@ -181,4 +181,54 @@ export class WorkoutRepository implements WorkoutRepositoryInterface {
       return left(e);
     }
   }
+
+  async update(workout: WorkOutEntity): Promise<Either<Error, WorkOutEntity>> {
+    try {
+      const workoutModel = await this.model.findFirst({
+        where: {
+          id: workout.getId(),
+        },
+        include: {
+          user: true,
+        },
+      });
+
+      if (!workoutModel) {
+        return left(
+          new RepositoryException(
+            `workout not  found for this id ${workout.getId()}`,
+            404,
+          ),
+        );
+      }
+
+      const workoutUpdates = await this.model.update({
+        where: {
+          id: workoutModel.id,
+        },
+        data: {
+          name: workout.getName(),
+          updatedAt: workout.getUpdatedAt(),
+        },
+        include: {
+          user: true,
+        },
+      });
+
+      return right(
+        WorkOutEntity.CreateFrom({
+          id: workoutUpdates.id,
+          name: workoutUpdates.name,
+          createdAt: workoutUpdates.createdAt,
+          updatedAt: workoutUpdates.updatedAt,
+          user: UserEntity.CreateFrom({
+            ...workoutUpdates.user,
+          }),
+          deletedAt: workoutUpdates.deletedAt,
+        }),
+      );
+    } catch (e) {
+      return left(e);
+    }
+  }
 }

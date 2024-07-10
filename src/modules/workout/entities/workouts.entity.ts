@@ -87,4 +87,9 @@ export class WorkOutEntity extends BaseEntity {
   public getDeletedAt(): Date | undefined {
     return this.deletedAt;
   }
+
+  public Update(name: string): void {
+    this.name = name;
+    this.updatedAt = new Date();
+  }
 }

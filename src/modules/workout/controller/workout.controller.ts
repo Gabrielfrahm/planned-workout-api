@@ -6,6 +6,7 @@ import {
   Inject,
   LoggerService,
   Param,
+  Patch,
   Post,
   Query,
   Req,
@@ -19,12 +20,14 @@ import {
   OutputSearchWorkoutsDto,
   OutputWorkoutDto,
   SearchWorkoutsDto,
+  UpdateWorkoutByIdDto,
 } from '../dtos/workout.dto';
 import { AuthenticationGuard } from '@modules/auth/middlewares/authenticate.guard';
 import { FindByIdWorkoutUseCase } from '../usecases/find-by-id-workout.usecase';
 import { DeleteByIdWorkoutUseCase } from '../usecases/delete-workout.usecase';
 import { SearchWorkoutsUseCase } from '../usecases/search-workout.usecase';
 import { Request } from 'express';
+import { UpdateWorkoutUseCase } from '../usecases/update-workout.usecase';
 
 @Controller('workouts')
 export class WorkoutsController {
@@ -36,6 +39,7 @@ export class WorkoutsController {
     private readonly findByIdWorkoutUseCase: FindByIdWorkoutUseCase,
     private readonly deleteByIdWorkoutUseCase: DeleteByIdWorkoutUseCase,
     private readonly searchWorkoutsUseCase: SearchWorkoutsUseCase,
+    private readonly updateByIdWorkoutUseCase: UpdateWorkoutUseCase,
   ) {}
 
   @Post('/')
@@ -124,6 +128,30 @@ export class WorkoutsController {
     await this.loggerService.log(
       `successfully to search variants products with params ${JSON.stringify(data)} `,
     );
+
+    return response.value;
+  }
+
+  @Patch('/:id')
+  @UseGuards(AuthenticationGuard)
+  async updateById(
+    @Body() data: Omit<UpdateWorkoutByIdDto, 'id'>,
+    @Param('id') id: string,
+  ): Promise<OutputWorkoutDto> {
+    const response = await this.updateByIdWorkoutUseCase.execute({
+      id,
+      ...data,
+    });
+
+    if (response.isLeft()) {
+      await this.loggerService.error(
+        `Error when try Update by id workout with params ${JSON.stringify(data)}`,
+        response.value.stack,
+      );
+      throw response.value;
+    }
+
+    await this.loggerService.log(`workout Updated ${id}`);
 
     return response.value;
   }

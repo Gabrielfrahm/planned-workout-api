@@ -88,3 +88,13 @@ export class DeleteWorkoutByIdDto {
   @IsNotEmpty()
   id: string;
 }
+
+export class UpdateWorkoutByIdDto {
+  @IsUUID(4)
+  @IsNotEmpty()
+  id: string;
+
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+}
