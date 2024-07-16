@@ -117,6 +117,7 @@ export class WorkoutRepository implements WorkoutRepositoryInterface {
     deletedAt,
     sort,
     sortDir,
+    noPaginate = false,
   }: SearchWorkoutsDto): Promise<Either<Error, Search<WorkOutEntity>>> {
     const skip = (page - 1) * perPage;
     const take = Number(perPage);
@@ -136,7 +137,7 @@ export class WorkoutRepository implements WorkoutRepositoryInterface {
         },
       }),
     };
-
+    console.log(noPaginate, noPaginate && { skip: skip, take: take });
     try {
       const [workouts, count] = await this.connection.$transaction([
         this.model.findMany({
@@ -144,8 +145,7 @@ export class WorkoutRepository implements WorkoutRepositoryInterface {
           orderBy: {
             [sort ?? 'createdAt']: sortDir ?? 'desc',
           },
-          skip: skip,
-          take: take,
+          ...(!noPaginate && { skip: skip, take: take }),
           include: {
             user: true,
           },

@@ -65,6 +65,9 @@ export class SearchWorkoutsDto {
 
   @IsOptional()
   deletedAt?: boolean;
+
+  @IsOptional()
+  noPaginate?: boolean;
 }
 
 export class OutputSearchWorkoutsDto {
