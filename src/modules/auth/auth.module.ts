@@ -7,6 +7,7 @@ import { UserModule } from '@modules/user/user.module';
 import { LoggingModule } from '@modules/logger/logger.module';
 import { AuthenticationGuard } from './middlewares/authenticate.guard';
 import { Auth } from './usecases/auth.usecase';
+import { AuthGoogle } from './usecases/auth-google.usecase';
 
 @Module({
   imports: [UserModule, LoggingModule],
@@ -30,6 +31,7 @@ import { Auth } from './usecases/auth.usecase';
       inject: ['jwtService'],
     },
     Auth,
+    AuthGoogle,
   ],
   exports: ['userTokenRepository', 'jwtService', AuthenticationGuard],
 })

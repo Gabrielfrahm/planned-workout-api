@@ -11,6 +11,11 @@ import { Auth } from './usecases/auth.usecase';
 import { CreateCommandAuthDto, OutputAuthDto } from './dtos/auth.dto';
 
 import { AuthenticationGuard } from './middlewares/authenticate.guard';
+import {
+  CreateCommandAuthGoogleDto,
+  OutputAuthGoogleDto,
+} from './dtos/auth-google';
+import { AuthGoogle } from './usecases/auth-google.usecase';
 
 @Controller('auth')
 export class AuthController {
@@ -18,6 +23,7 @@ export class AuthController {
     @Inject('WinstonLoggerService')
     private readonly loggerService: LoggerService,
     private readonly auth: Auth,
+    private readonly authGoogle: AuthGoogle,
   ) {}
 
   @Post('')
@@ -35,6 +41,26 @@ export class AuthController {
     }
 
     this.loggerService.log(`User authenticated successfully: ${data.email}`);
+    return response.value;
+  }
+
+  @Post('google')
+  async authenticationGoogle(
+    @Body() data: CreateCommandAuthGoogleDto,
+  ): Promise<OutputAuthGoogleDto> {
+    const response = await this.authGoogle.execute(data);
+
+    if (response.isLeft()) {
+      this.loggerService.error(
+        `Authentication with google failed for user: ${data.email}`,
+        response.value.stack,
+      );
+      throw response.value;
+    }
+
+    this.loggerService.log(
+      `User authenticated with google successfully: ${data.email}`,
+    );
     return response.value;
   }
 
